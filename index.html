@@ -229,7 +229,7 @@ canvas {
 
 <body>
 
-<!-- ================= HOME ================= -->
+<!-- HOME -->
 
 <div id="home">
 
@@ -265,17 +265,11 @@ canvas {
             <p>Eat the food and grow!</p>
         </div>
 
-        <div class="game-card" onclick="openGame('runner')">
-            <div class="game-icon">🏃</div>
-            <h2>Parkour Run</h2>
-            <p>Run, jump and survive!</p>
-        </div>
-
     </div>
 </div>
 
 
-<!-- ================= 2048 ================= -->
+<!-- 2048 -->
 
 <div id="screen2048" class="game-screen">
 
@@ -300,7 +294,7 @@ canvas {
 </div>
 
 
-<!-- ================= SHOOTER ================= -->
+<!-- SHOOTER -->
 
 <div id="screenShooter" class="game-screen">
 
@@ -327,7 +321,7 @@ canvas {
 </div>
 
 
-<!-- ================= BASKETBALL ================= -->
+<!-- BASKETBALL -->
 
 <div id="screenBasketball" class="game-screen">
 
@@ -354,7 +348,7 @@ canvas {
 </div>
 
 
-<!-- ================= SNAKE ================= -->
+<!-- SNAKE -->
 
 <div id="screenSnake" class="game-screen">
 
@@ -384,49 +378,15 @@ canvas {
 </div>
 
 
-<!-- ================= RUNNER ================= -->
-
-<div id="screenRunner" class="game-screen">
-
-    <button class="back-button" onclick="goHome()">← HOME</button>
-
-    <h1 class="game-title">
-        PARKOUR RUN
-    </h1>
-
-    <div class="controls">
-        SPACE or UP ARROW = JUMP
-    </div>
-
-    <div id="runnerScore" class="score">
-        Score: 0
-    </div>
-
-    <canvas id="runnerCanvas"
-            width="900"
-            height="400">
-    </canvas>
-
-    <button class="restart" onclick="newRunner()">
-        RESTART
-    </button>
-
-</div>
-
-
 <script>
 
-/* =====================================================
-   GAME MANAGER
-===================================================== */
+/* GAME MANAGER */
 
 let currentGame = null;
-
 let animation = null;
 let timer = null;
 
 const keys = {};
-
 
 function stopEverything() {
 
@@ -441,72 +401,43 @@ function stopEverything() {
     }
 }
 
-
 function openGame(name) {
 
     stopEverything();
 
     currentGame = name;
 
-    document.getElementById("home")
-        .style.display = "none";
+    document.getElementById("home").style.display = "none";
 
     document.querySelectorAll(".game-screen")
         .forEach(screen => {
             screen.classList.remove("active");
         });
 
-
     if (name === "2048") {
-
-        document
-            .getElementById("screen2048")
+        document.getElementById("screen2048")
             .classList.add("active");
-
         new2048();
     }
 
-
     if (name === "shooter") {
-
-        document
-            .getElementById("screenShooter")
+        document.getElementById("screenShooter")
             .classList.add("active");
-
         newShooter();
     }
 
-
     if (name === "basketball") {
-
-        document
-            .getElementById("screenBasketball")
+        document.getElementById("screenBasketball")
             .classList.add("active");
-
         newBasketball();
     }
 
-
     if (name === "snake") {
-
-        document
-            .getElementById("screenSnake")
+        document.getElementById("screenSnake")
             .classList.add("active");
-
         newSnake();
     }
-
-
-    if (name === "runner") {
-
-        document
-            .getElementById("screenRunner")
-            .classList.add("active");
-
-        newRunner();
-    }
 }
-
 
 function goHome() {
 
@@ -514,25 +445,20 @@ function goHome() {
 
     currentGame = null;
 
-    document
-        .querySelectorAll(".game-screen")
+    document.querySelectorAll(".game-screen")
         .forEach(screen => {
             screen.classList.remove("active");
         });
 
-    document.getElementById("home")
-        .style.display = "block";
+    document.getElementById("home").style.display = "block";
 }
 
 
-/* =====================================================
-   KEYBOARD
-===================================================== */
+/* KEYBOARD */
 
 document.addEventListener("keydown", function(e) {
 
     keys[e.key.toLowerCase()] = true;
-
 
     if (currentGame === "2048") {
 
@@ -557,56 +483,28 @@ document.addEventListener("keydown", function(e) {
         }
     }
 
-
     if (currentGame === "snake") {
 
-        if (
-            e.key === "ArrowUp" &&
-            snakeDY !== 1
-        ) {
+        if (e.key === "ArrowUp" && snakeDY !== 1) {
             snakeDX = 0;
             snakeDY = -1;
         }
 
-        if (
-            e.key === "ArrowDown" &&
-            snakeDY !== -1
-        ) {
+        if (e.key === "ArrowDown" && snakeDY !== -1) {
             snakeDX = 0;
             snakeDY = 1;
         }
 
-        if (
-            e.key === "ArrowLeft" &&
-            snakeDX !== 1
-        ) {
+        if (e.key === "ArrowLeft" && snakeDX !== 1) {
             snakeDX = -1;
             snakeDY = 0;
         }
 
-        if (
-            e.key === "ArrowRight" &&
-            snakeDX !== -1
-        ) {
+        if (e.key === "ArrowRight" && snakeDX !== -1) {
             snakeDX = 1;
             snakeDY = 0;
         }
     }
-
-
-    if (
-        currentGame === "runner" &&
-        (
-            e.code === "Space" ||
-            e.key === "ArrowUp"
-        )
-    ) {
-
-        e.preventDefault();
-
-        runnerJump();
-    }
-
 
     if (
         currentGame === "shooter" &&
@@ -615,7 +513,6 @@ document.addEventListener("keydown", function(e) {
         shooterFire("blue");
     }
 
-
     if (
         currentGame === "shooter" &&
         e.key.toLowerCase() === "l"
@@ -623,14 +520,12 @@ document.addEventListener("keydown", function(e) {
         shooterFire("red");
     }
 
-
     if (
         currentGame === "basketball" &&
         e.key.toLowerCase() === "w"
     ) {
         basketballShoot("blue");
     }
-
 
     if (
         currentGame === "basketball" &&
@@ -641,21 +536,15 @@ document.addEventListener("keydown", function(e) {
 
 });
 
-
 document.addEventListener("keyup", function(e) {
-
     keys[e.key.toLowerCase()] = false;
-
 });
 
 
-/* =====================================================
-   2048
-===================================================== */
+/* 2048 */
 
 let board2048 = [];
 let score2048 = 0;
-
 
 function new2048() {
 
@@ -674,14 +563,12 @@ function new2048() {
     draw2048();
 }
 
-
 function add2048() {
 
     const empty = [];
 
     for (let y=0; y<4; y++) {
         for (let x=0; x<4; x++) {
-
             if (board2048[y][x] === 0) {
                 empty.push([x,y]);
             }
@@ -691,16 +578,11 @@ function add2048() {
     if (!empty.length) return;
 
     const spot =
-        empty[
-            Math.floor(
-                Math.random() * empty.length
-            )
-        ];
+        empty[Math.floor(Math.random() * empty.length)];
 
     board2048[spot[1]][spot[0]] =
         Math.random() < .9 ? 2 : 4;
 }
-
 
 function mergeLine(line) {
 
@@ -737,33 +619,24 @@ function mergeLine(line) {
     return result;
 }
 
-
 function move2048(direction) {
 
-    const before =
-        JSON.stringify(board2048);
-
+    const before = JSON.stringify(board2048);
 
     if (direction === 0) {
 
         for (let y=0; y<4; y++) {
-            board2048[y] =
-                mergeLine(board2048[y]);
+            board2048[y] = mergeLine(board2048[y]);
         }
     }
-
 
     if (direction === 1) {
 
         for (let y=0; y<4; y++) {
-
             board2048[y] =
-                mergeLine(
-                    [...board2048[y]].reverse()
-                ).reverse();
+                mergeLine([...board2048[y]].reverse()).reverse();
         }
     }
-
 
     if (direction === 2) {
 
@@ -775,15 +648,13 @@ function move2048(direction) {
                 column.push(board2048[y][x]);
             }
 
-            const merged =
-                mergeLine(column);
+            const merged = mergeLine(column);
 
             for (let y=0; y<4; y++) {
                 board2048[y][x] = merged[y];
             }
         }
     }
-
 
     if (direction === 3) {
 
@@ -796,9 +667,7 @@ function move2048(direction) {
             }
 
             const merged =
-                mergeLine(
-                    column.reverse()
-                ).reverse();
+                mergeLine(column.reverse()).reverse();
 
             for (let y=0; y<4; y++) {
                 board2048[y][x] = merged[y];
@@ -806,17 +675,12 @@ function move2048(direction) {
         }
     }
 
-
-    if (
-        JSON.stringify(board2048) !== before
-    ) {
+    if (JSON.stringify(board2048) !== before) {
 
         add2048();
-
         draw2048();
     }
 }
-
 
 function draw2048() {
 
@@ -824,7 +688,6 @@ function draw2048() {
         document.getElementById("board2048");
 
     board.innerHTML = "";
-
 
     for (let y=0; y<4; y++) {
 
@@ -842,23 +705,18 @@ function draw2048() {
                 tile.classList.add("t" + value);
             }
 
-            tile.textContent =
-                value || "";
+            tile.textContent = value || "";
 
             board.appendChild(tile);
         }
     }
 
-
     document.getElementById("score2048")
-        .textContent =
-        "Score: " + score2048;
+        .textContent = "Score: " + score2048;
 }
 
 
-/* =====================================================
-   SNAKE
-===================================================== */
+/* SNAKE */
 
 const snakeCanvas =
     document.getElementById("snakeCanvas");
@@ -871,7 +729,6 @@ let snakeFood = {};
 let snakeDX = 1;
 let snakeDY = 0;
 let snakeScore = 0;
-
 
 function newSnake() {
 
@@ -892,12 +749,8 @@ function newSnake() {
 
     drawSnake();
 
-    timer = setInterval(
-        updateSnake,
-        100
-    );
+    timer = setInterval(updateSnake, 100);
 }
-
 
 function createSnakeFood() {
 
@@ -906,7 +759,6 @@ function createSnakeFood() {
         y: Math.floor(Math.random()*25)
     };
 }
-
 
 function updateSnake() {
 
@@ -917,13 +769,11 @@ function updateSnake() {
         y: snake[0].y + snakeDY
     };
 
-
     const wall =
         head.x < 0 ||
         head.x >= 25 ||
         head.y < 0 ||
         head.y >= 25;
-
 
     const body =
         snake.some(
@@ -932,17 +782,12 @@ function updateSnake() {
                 part.y === head.y
         );
 
-
     if (wall || body) {
-
         newSnake();
-
         return;
     }
 
-
     snake.unshift(head);
-
 
     if (
         head.x === snakeFood.x &&
@@ -950,7 +795,6 @@ function updateSnake() {
     ) {
 
         snakeScore++;
-
         createSnakeFood();
 
     } else {
@@ -958,37 +802,14 @@ function updateSnake() {
         snake.pop();
     }
 
-
     drawSnake();
 }
-
 
 function drawSnake() {
 
     snakeCtx.fillStyle = "#081331";
 
-    snakeCtx.fillRect(
-        0,0,500,500
-    );
-
-
-    snakeCtx.strokeStyle =
-        "rgba(255,255,255,.05)";
-
-
-    for (let i=0; i<=25; i++) {
-
-        snakeCtx.beginPath();
-        snakeCtx.moveTo(i*20,0);
-        snakeCtx.lineTo(i*20,500);
-        snakeCtx.stroke();
-
-        snakeCtx.beginPath();
-        snakeCtx.moveTo(0,i*20);
-        snakeCtx.lineTo(500,i*20);
-        snakeCtx.stroke();
-    }
-
+    snakeCtx.fillRect(0,0,500,500);
 
     snakeCtx.fillStyle = "#ff4d6d";
 
@@ -1004,13 +825,10 @@ function drawSnake() {
 
     snakeCtx.fill();
 
-
     snake.forEach((part,index) => {
 
         snakeCtx.fillStyle =
-            index === 0
-            ? "#a78bfa"
-            : "#38bdf8";
+            index === 0 ? "#a78bfa" : "#38bdf8";
 
         snakeCtx.fillRect(
             part.x*20+2,
@@ -1020,16 +838,12 @@ function drawSnake() {
         );
     });
 
-
     document.getElementById("snakeScore")
-        .textContent =
-        "Score: " + snakeScore;
+        .textContent = "Score: " + snakeScore;
 }
 
 
-/* =====================================================
-   SHOOTER
-===================================================== */
+/* SHOOTER */
 
 const shooterCanvas =
     document.getElementById("shooterCanvas");
@@ -1042,7 +856,6 @@ let shooterBullets = [];
 
 let blueWins = 0;
 let redWins = 0;
-
 
 function newShooter() {
 
@@ -1068,58 +881,39 @@ function newShooter() {
     shooterLoop();
 }
 
-
 function shooterFire(player) {
 
-    if (
-        currentGame !== "shooter"
-    ) return;
+    if (currentGame !== "shooter") return;
 
-
-    const p =
-        shooterPlayers[player];
-
+    const p = shooterPlayers[player];
 
     shooterBullets.push({
 
         x:p.x,
         y:p.y,
 
-        dx:
-            player === "blue"
-            ? 10
-            : -10,
+        dx: player === "blue" ? 10 : -10,
 
         owner:player
     });
 }
 
-
 function shooterLoop() {
 
-    if (
-        currentGame !== "shooter"
-    ) return;
+    if (currentGame !== "shooter") return;
 
-
-    const blue =
-        shooterPlayers.blue;
-
-    const red =
-        shooterPlayers.red;
-
+    const blue = shooterPlayers.blue;
+    const red = shooterPlayers.red;
 
     if (keys["w"]) blue.y -= 5;
     if (keys["s"]) blue.y += 5;
     if (keys["a"]) blue.x -= 5;
     if (keys["d"]) blue.x += 5;
 
-
     if (keys["arrowup"]) red.y -= 5;
     if (keys["arrowdown"]) red.y += 5;
     if (keys["arrowleft"]) red.x -= 5;
     if (keys["arrowright"]) red.x += 5;
-
 
     blue.x = Math.max(25,Math.min(875,blue.x));
     blue.y = Math.max(25,Math.min(475,blue.y));
@@ -1127,13 +921,11 @@ function shooterLoop() {
     red.x = Math.max(25,Math.min(875,red.x));
     red.y = Math.max(25,Math.min(475,red.y));
 
-
     shooterBullets.forEach(
         bullet => {
             bullet.x += bullet.dx;
         }
     );
-
 
     shooterBullets =
         shooterBullets.filter(
@@ -1142,92 +934,55 @@ function shooterLoop() {
                 bullet.x < 920
         );
 
+    shooterBullets.forEach(bullet => {
 
-    shooterBullets.forEach(
-        bullet => {
+        const target =
+            bullet.owner === "blue" ? red : blue;
 
-            const target =
-                bullet.owner === "blue"
-                ? red
-                : blue;
+        if (
+            Math.abs(bullet.x-target.x) < 25 &&
+            Math.abs(bullet.y-target.y) < 25
+        ) {
 
+            target.hp--;
 
-            if (
-                Math.abs(
-                    bullet.x-target.x
-                ) < 25 &&
+            bullet.x = -100;
 
-                Math.abs(
-                    bullet.y-target.y
-                ) < 25
-            ) {
+            if (target.hp <= 0) {
 
-                target.hp = target.hp - 1;
-
-                bullet.x = -100;
-
-
-                if (target.hp <= 0) {
-
-                    if (
-                        bullet.owner === "blue"
-                    ) {
-                        blueWins++;
-                    } else {
-                        redWins++;
-                    }
-
-
-                    target.hp = 5;
-
-
-                    target.x =
-                        target === blue
-                        ? 100
-                        : 800;
-
-                    target.y = 250;
+                if (bullet.owner === "blue") {
+                    blueWins++;
+                } else {
+                    redWins++;
                 }
+
+                target.hp = 5;
+
+                target.x =
+                    target === blue ? 100 : 800;
+
+                target.y = 250;
             }
         }
-    );
-
+    });
 
     drawShooter();
 
-
     animation =
-        requestAnimationFrame(
-            shooterLoop
-        );
+        requestAnimationFrame(shooterLoop);
 }
-
 
 function drawShooter() {
 
     const gradient =
-        shooterCtx.createLinearGradient(
-            0,0,900,500
-        );
+        shooterCtx.createLinearGradient(0,0,900,500);
 
-    gradient.addColorStop(
-        0,
-        "#08174d"
-    );
+    gradient.addColorStop(0,"#08174d");
+    gradient.addColorStop(1,"#4a075c");
 
-    gradient.addColorStop(
-        1,
-        "#4a075c"
-    );
+    shooterCtx.fillStyle = gradient;
 
-
-    shooterCtx.fillStyle =
-        gradient;
-
-    shooterCtx.fillRect(
-        0,0,900,500
-    );
-
+    shooterCtx.fillRect(0,0,900,500);
 
     shooterCtx.strokeStyle =
         "rgba(255,255,255,.2)";
@@ -1243,7 +998,6 @@ function drawShooter() {
 
     shooterCtx.setLineDash([]);
 
-
     drawShooterPlayer(
         shooterPlayers.blue,
         "#38bdf8"
@@ -1254,44 +1008,33 @@ function drawShooter() {
         "#ff4d6d"
     );
 
+    shooterBullets.forEach(bullet => {
 
-    shooterBullets.forEach(
-        bullet => {
+        shooterCtx.fillStyle =
+            bullet.owner === "blue"
+            ? "#38bdf8"
+            : "#ff4d6d";
 
-            shooterCtx.fillStyle =
-                bullet.owner === "blue"
-                ? "#38bdf8"
-                : "#ff4d6d";
+        shooterCtx.beginPath();
 
-            shooterCtx.beginPath();
+        shooterCtx.arc(
+            bullet.x,
+            bullet.y,
+            6,
+            0,
+            Math.PI*2
+        );
 
-            shooterCtx.arc(
-                bullet.x,
-                bullet.y,
-                6,
-                0,
-                Math.PI*2
-            );
+        shooterCtx.fill();
+    });
 
-            shooterCtx.fill();
-        }
-    );
-
-
-    document.getElementById(
-        "shooterScore"
-    ).textContent =
-        "Blue: " +
-        blueWins +
-        " | Red: " +
-        redWins;
+    document.getElementById("shooterScore")
+        .textContent =
+        "Blue: " + blueWins +
+        " | Red: " + redWins;
 }
 
-
-function drawShooterPlayer(
-    player,
-    color
-) {
+function drawShooterPlayer(player,color) {
 
     shooterCtx.fillStyle = color;
 
@@ -1307,9 +1050,7 @@ function drawShooterPlayer(
 
     shooterCtx.fill();
 
-
-    shooterCtx.fillStyle =
-        "white";
+    shooterCtx.fillStyle = "white";
 
     shooterCtx.fillRect(
         player.x-25,
@@ -1318,22 +1059,18 @@ function drawShooterPlayer(
         6
     );
 
-
-    shooterCtx.fillStyle =
-        "#222";
+    shooterCtx.fillStyle = "#222";
 
     shooterCtx.fillRect(
         player.x-25,
         player.y-38,
-        player.hp * 10,
+        player.hp*10,
         6
     );
 }
 
 
-/* =====================================================
-   BASKETBALL
-===================================================== */
+/* BASKETBALL */
 
 const basketCanvas =
     document.getElementById("basketCanvas");
@@ -1343,7 +1080,6 @@ const basketCtx =
 
 let basketPlayers;
 let basketballs = [];
-
 
 function newBasketball() {
 
@@ -1364,33 +1100,23 @@ function newBasketball() {
         }
     };
 
-
     basketballs = [];
 
     basketballLoop();
 }
 
-
 function basketballShoot(player) {
 
-    if (
-        currentGame !== "basketball"
-    ) return;
+    if (currentGame !== "basketball") return;
 
-
-    const p =
-        basketPlayers[player];
-
+    const p = basketPlayers[player];
 
     basketballs.push({
 
         x:p.x,
         y:p.y-60,
 
-        vx:
-            player === "blue"
-            ? 8
-            : -8,
+        vx: player === "blue" ? 8 : -8,
 
         vy:-15,
 
@@ -1398,47 +1124,31 @@ function basketballShoot(player) {
     });
 }
 
-
 function basketballLoop() {
 
-    if (
-        currentGame !== "basketball"
-    ) return;
+    if (currentGame !== "basketball") return;
 
+    basketballs.forEach(ball => {
 
-    basketballs.forEach(
-        ball => {
+        ball.x += ball.vx;
+        ball.y += ball.vy;
 
-            ball.x += ball.vx;
-            ball.y += ball.vy;
+        ball.vy += .4;
 
-            ball.vy += .4;
+        const hoopX =
+            ball.owner === "blue" ? 820 : 80;
 
+        if (
+            Math.abs(ball.x-hoopX) < 25 &&
+            ball.y > 260 &&
+            ball.y < 320
+        ) {
 
-            const hoopX =
-                ball.owner === "blue"
-                ? 820
-                : 80;
+            basketPlayers[ball.owner].score++;
 
-
-            if (
-                Math.abs(
-                    ball.x-hoopX
-                ) < 25 &&
-
-                ball.y > 260 &&
-                ball.y < 320
-            ) {
-
-                basketPlayers[
-                    ball.owner
-                ].score++;
-
-                ball.x = -500;
-            }
+            ball.x = -500;
         }
-    );
-
+    });
 
     basketballs =
         basketballs.filter(
@@ -1448,50 +1158,27 @@ function basketballLoop() {
                 ball.y < 600
         );
 
-
     drawBasketball();
 
-
     animation =
-        requestAnimationFrame(
-            basketballLoop
-        );
+        requestAnimationFrame(basketballLoop);
 }
-
 
 function drawBasketball() {
 
     const gradient =
-        basketCtx.createLinearGradient(
-            0,0,900,500
-        );
+        basketCtx.createLinearGradient(0,0,900,500);
 
-    gradient.addColorStop(
-        0,
-        "#101d55"
-    );
+    gradient.addColorStop(0,"#101d55");
+    gradient.addColorStop(1,"#4d115d");
 
-    gradient.addColorStop(
-        1,
-        "#4d115d"
-    );
+    basketCtx.fillStyle = gradient;
 
+    basketCtx.fillRect(0,0,900,500);
 
-    basketCtx.fillStyle =
-        gradient;
+    basketCtx.fillStyle = "#8b5a2b";
 
-    basketCtx.fillRect(
-        0,0,900,500
-    );
-
-
-    basketCtx.fillStyle =
-        "#8b5a2b";
-
-    basketCtx.fillRect(
-        0,430,900,70
-    );
-
+    basketCtx.fillRect(0,430,900,70);
 
     basketCtx.strokeStyle =
         "rgba(255,255,255,.5)";
@@ -1503,10 +1190,8 @@ function drawBasketball() {
 
     basketCtx.stroke();
 
-
     drawHoop(80);
     drawHoop(820);
-
 
     drawBasketPlayer(
         basketPlayers.blue,
@@ -1518,42 +1203,34 @@ function drawBasketball() {
         "#ff4d6d"
     );
 
+    basketballs.forEach(ball => {
 
-    basketballs.forEach(
-        ball => {
+        basketCtx.fillStyle = "#ff8c00";
 
-            basketCtx.fillStyle =
-                "#ff8c00";
+        basketCtx.beginPath();
 
-            basketCtx.beginPath();
+        basketCtx.arc(
+            ball.x,
+            ball.y,
+            12,
+            0,
+            Math.PI*2
+        );
 
-            basketCtx.arc(
-                ball.x,
-                ball.y,
-                12,
-                0,
-                Math.PI*2
-            );
+        basketCtx.fill();
+    });
 
-            basketCtx.fill();
-        }
-    );
-
-
-    document.getElementById(
-        "basketScore"
-    ).textContent =
+    document.getElementById("basketScore")
+        .textContent =
         "Blue: " +
         basketPlayers.blue.score +
         " | Red: " +
         basketPlayers.red.score;
 }
 
-
 function drawHoop(x) {
 
-    basketCtx.fillStyle =
-        "white";
+    basketCtx.fillStyle = "white";
 
     basketCtx.fillRect(
         x-8,
@@ -1562,9 +1239,7 @@ function drawHoop(x) {
         130
     );
 
-
-    basketCtx.strokeStyle =
-        "#ff7900";
+    basketCtx.strokeStyle = "#ff7900";
 
     basketCtx.lineWidth = 7;
 
@@ -1583,14 +1258,9 @@ function drawHoop(x) {
     basketCtx.lineWidth = 1;
 }
 
+function drawBasketPlayer(player,color) {
 
-function drawBasketPlayer(
-    player,
-    color
-) {
-
-    basketCtx.fillStyle =
-        color;
+    basketCtx.fillStyle = color;
 
     basketCtx.beginPath();
 
@@ -1604,335 +1274,12 @@ function drawBasketPlayer(
 
     basketCtx.fill();
 
-
     basketCtx.fillRect(
         player.x-18,
         player.y-50,
         36,
         50
     );
-}
-
-
-/* =====================================================
-   PARKOUR RUN
-===================================================== */
-
-const runnerCanvas =
-    document.getElementById("runnerCanvas");
-
-const runnerCtx =
-    runnerCanvas.getContext("2d");
-
-let runner;
-
-
-function newRunner() {
-
-    stopEverything();
-
-
-    runner = {
-
-        x:100,
-
-        y:300,
-
-        width:35,
-
-        height:55,
-
-        velocityY:0,
-
-        jumping:false,
-
-        score:0,
-
-        speed:6,
-
-        obstacles:[]
-    };
-
-
-    for (
-        let i=0;
-        i<5;
-        i++
-    ) {
-
-        runner.obstacles.push({
-
-            x:
-                550 +
-                i*230,
-
-            width:
-                35 +
-                Math.random()*30,
-
-            height:
-                45 +
-                Math.random()*65
-        });
-    }
-
-
-    runnerLoop();
-}
-
-
-function runnerJump() {
-
-    if (
-        currentGame !== "runner"
-    ) return;
-
-
-    if (
-        !runner.jumping
-    ) {
-
-        runner.velocityY = -14;
-
-        runner.jumping = true;
-    }
-}
-
-
-function runnerLoop() {
-
-    if (
-        currentGame !== "runner"
-    ) return;
-
-
-    runner.velocityY += .7;
-
-    runner.y +=
-        runner.velocityY;
-
-
-    if (
-        runner.y >= 300
-    ) {
-
-        runner.y = 300;
-
-        runner.velocityY = 0;
-
-        runner.jumping = false;
-    }
-
-
-    runner.obstacles.forEach(
-        obstacle => {
-
-            obstacle.x -= runner.speed;
-
-
-            if (
-                obstacle.x < -100
-            ) {
-
-                obstacle.x =
-                    900 +
-                    Math.random()*250;
-
-                runner.score++;
-
-                runner.speed =
-                    Math.min(
-                        13,
-                        runner.speed+.1
-                    );
-            }
-
-
-            const collision =
-
-                runner.x <
-                obstacle.x +
-                obstacle.width &&
-
-                runner.x +
-                runner.width >
-                obstacle.x &&
-
-                runner.y +
-                runner.height >
-                400 -
-                obstacle.height;
-
-
-            if (collision) {
-
-                runner.score = 0;
-
-                obstacle.x = 900;
-            }
-        }
-    );
-
-
-    drawRunner();
-
-
-    animation =
-        requestAnimationFrame(
-            runnerLoop
-        );
-}
-
-
-function drawRunner() {
-
-    const gradient =
-        runnerCtx.createLinearGradient(
-            0,0,0,400
-        );
-
-    gradient.addColorStop(
-        0,
-        "#0d1b52"
-    );
-
-    gradient.addColorStop(
-        1,
-        "#501366"
-    );
-
-
-    runnerCtx.fillStyle =
-        gradient;
-
-    runnerCtx.fillRect(
-        0,0,900,400
-    );
-
-
-    /* stars */
-
-    runnerCtx.fillStyle =
-        "white";
-
-
-    for (
-        let i=0;
-        i<45;
-        i++
-    ) {
-
-        runnerCtx.globalAlpha =
-            .35 + (i%3)*.2;
-
-        runnerCtx.fillRect(
-            (i*97)%900,
-            (i*43)%220,
-            2,
-            2
-        );
-    }
-
-
-    runnerCtx.globalAlpha = 1;
-
-
-    /* moon */
-
-    runnerCtx.fillStyle =
-        "#ffffff";
-
-    runnerCtx.beginPath();
-
-    runnerCtx.arc(
-        760,
-        75,
-        35,
-        0,
-        Math.PI*2
-    );
-
-    runnerCtx.fill();
-
-
-    /* ground */
-
-    runnerCtx.fillStyle =
-        "#111122";
-
-    runnerCtx.fillRect(
-        0,355,900,45
-    );
-
-
-    runnerCtx.fillStyle =
-        "#38bdf8";
-
-    runnerCtx.fillRect(
-        0,355,900,4
-    );
-
-
-    /* obstacles */
-
-    runner.obstacles.forEach(
-        obstacle => {
-
-            runnerCtx.fillStyle =
-                "#ff4d6d";
-
-            runnerCtx.fillRect(
-
-                obstacle.x,
-
-                400-obstacle.height,
-
-                obstacle.width,
-
-                obstacle.height
-            );
-        }
-    );
-
-
-    /* player */
-
-    runnerCtx.fillStyle =
-        "#a78bfa";
-
-    runnerCtx.fillRect(
-
-        runner.x,
-
-        runner.y,
-
-        runner.width,
-
-        runner.height
-    );
-
-
-    runnerCtx.fillStyle =
-        "#38bdf8";
-
-    runnerCtx.beginPath();
-
-    runnerCtx.arc(
-        runner.x+17,
-        runner.y-10,
-        15,
-        0,
-        Math.PI*2
-    );
-
-    runnerCtx.fill();
-
-
-    document.getElementById(
-        "runnerScore"
-    ).textContent =
-        "Score: " +
-        runner.score;
 }
 
 </script>
