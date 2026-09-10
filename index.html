@@ -221,4 +221,1181 @@
 
 </body>
 </html>
+<!-- ================================
+     PASTE EVERYTHING BELOW THIS LINE
+     DIRECTLY AT THE END OF YOUR FILE
+================================ -->
+
+<style>
+#myGameScreen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background:
+        radial-gradient(circle at 20% 20%, #704cff, transparent 35%),
+        radial-gradient(circle at 80% 80%, #008cff, transparent 35%),
+        linear-gradient(135deg, #08002b, #22005c, #001d5c);
+    color: white;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+#myGameScreen.show {
+    display: block;
+}
+
+#myGameScreen h1 {
+    text-align: center;
+    font-size: 50px;
+    margin: 50px 0 15px;
+    text-shadow: 0 0 25px #8b7cff;
+}
+
+#myGameBack {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255,255,255,.15);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#myGameBack:hover {
+    background: rgba(255,255,255,.3);
+}
+
+#myGameInfo {
+    text-align: center;
+    font-size: 20px;
+    margin: 15px;
+}
+
+#myGameCanvas {
+    display: block;
+    width: min(700px, 95vw);
+    height: auto;
+    margin: 20px auto;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,.25);
+    background: #090f2b;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+
+#myRestart {
+    display: block;
+    margin: 15px auto;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#654cff,#9d4edd);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+
+
+<div id="myGameScreen">
+
+    <button id="myGameBack" onclick="myCloseGame()">
+        ← BACK
+    </button>
+
+    <h1 id="myGameTitle">GAME</h1>
+
+    <div id="myGameInfo">
+        Ready!
+    </div>
+
+    <canvas
+        id="myGameCanvas"
+        width="700"
+        height="500">
+    </canvas>
+
+    <button id="myRestart" onclick="myStartGame()">
+        RESTART
+    </button>
+
+</div>
+
+
+<script>
+
+let myCurrentGame = "";
+let myAnimation = null;
+let myKeys = {};
+
+const myCanvas =
+    document.getElementById("myGameCanvas");
+
+const myCtx =
+    myCanvas.getContext("2d");
+
+
+/* ================================
+   OPEN GAME
+================================ */
+
+function playGame(game) {
+
+    myCurrentGame = game;
+
+    document.getElementById("myGameScreen")
+        .classList.add("show");
+
+    document.getElementById("myGameTitle")
+        .textContent = game;
+
+    myStartGame();
+}
+
+
+/* ================================
+   CLOSE GAME
+================================ */
+
+function myCloseGame() {
+
+    cancelAnimationFrame(myAnimation);
+
+    document.getElementById("myGameScreen")
+        .classList.remove("show");
+
+}
+
+
+/* ================================
+   START GAME
+================================ */
+
+function myStartGame() {
+
+    cancelAnimationFrame(myAnimation);
+
+    if(myCurrentGame === "2048") {
+        my2048();
+    }
+
+    else if(myCurrentGame === "Snake") {
+        mySnake();
+    }
+
+    else if(myCurrentGame === "Parkour Run") {
+        myRunner();
+    }
+
+    else if(myCurrentGame === "Shooter") {
+        myShooter();
+    }
+
+    else if(myCurrentGame === "Basketball") {
+        myBasketball();
+    }
+
+}
+
+
+/* ================================
+   2048
+================================ */
+
+let board2048;
+let score2048;
+
+
+function my2048() {
+
+    board2048 = [
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0]
+    ];
+
+    score2048 = 0;
+
+    add2048();
+    add2048();
+
+    draw2048();
+}
+
+
+function add2048() {
+
+    let empty = [];
+
+    for(let y=0;y<4;y++) {
+
+        for(let x=0;x<4;x++) {
+
+            if(board2048[y][x] === 0) {
+                empty.push({x,y});
+            }
+
+        }
+
+    }
+
+    if(empty.length === 0)
+        return;
+
+    let spot =
+        empty[Math.floor(Math.random()*empty.length)];
+
+    board2048[spot.y][spot.x] =
+        Math.random() < .9 ? 2 : 4;
+}
+
+
+function slide2048(row) {
+
+    row = row.filter(n => n !== 0);
+
+    for(let i=0;i<row.length-1;i++) {
+
+        if(row[i] === row[i+1]) {
+
+            row[i] *= 2;
+
+            score2048 += row[i];
+
+            row.splice(i+1,1);
+        }
+
+    }
+
+    while(row.length < 4)
+        row.push(0);
+
+    return row;
+}
+
+
+function move2048(direction) {
+
+    let old =
+        JSON.stringify(board2048);
+
+
+    if(direction === "left") {
+
+        for(let y=0;y<4;y++)
+            board2048[y] =
+                slide2048(board2048[y]);
+
+    }
+
+
+    if(direction === "right") {
+
+        for(let y=0;y<4;y++)
+            board2048[y] =
+                slide2048(
+                    board2048[y].reverse()
+                ).reverse();
+
+    }
+
+
+    if(direction === "up") {
+
+        for(let x=0;x<4;x++) {
+
+            let col = [];
+
+            for(let y=0;y<4;y++)
+                col.push(board2048[y][x]);
+
+            col = slide2048(col);
+
+            for(let y=0;y<4;y++)
+                board2048[y][x] = col[y];
+
+        }
+
+    }
+
+
+    if(direction === "down") {
+
+        for(let x=0;x<4;x++) {
+
+            let col = [];
+
+            for(let y=0;y<4;y++)
+                col.push(board2048[y][x]);
+
+            col =
+                slide2048(col.reverse())
+                .reverse();
+
+            for(let y=0;y<4;y++)
+                board2048[y][x] = col[y];
+
+        }
+
+    }
+
+
+    if(JSON.stringify(board2048) !== old) {
+
+        add2048();
+        draw2048();
+
+    }
+
+}
+
+
+function draw2048() {
+
+    myCtx.fillStyle = "#111936";
+
+    myCtx.fillRect(
+        0,0,700,500
+    );
+
+
+    let size = 100;
+    let gap = 15;
+
+
+    for(let y=0;y<4;y++) {
+
+        for(let x=0;x<4;x++) {
+
+            let value =
+                board2048[y][x];
+
+            let px =
+                100 + x*(size+gap);
+
+            let py =
+                25 + y*(size+gap);
+
+
+            myCtx.fillStyle =
+                value
+                ? "#705cff"
+                : "#252c4d";
+
+
+            myCtx.fillRect(
+                px,
+                py,
+                size,
+                size
+            );
+
+
+            if(value) {
+
+                myCtx.fillStyle = "white";
+
+                myCtx.font =
+                    "bold 30px Arial";
+
+                myCtx.textAlign = "center";
+
+                myCtx.textBaseline =
+                    "middle";
+
+                myCtx.fillText(
+                    value,
+                    px+size/2,
+                    py+size/2
+                );
+
+            }
+
+        }
+
+    }
+
+
+    document.getElementById("myGameInfo")
+        .textContent =
+        "Score: " + score2048 +
+        " | Use Arrow Keys";
+}
+
+
+/* ================================
+   SNAKE
+================================ */
+
+let mySnakeBody;
+let myFood;
+let mySnakeDX;
+let mySnakeDY;
+let mySnakeScore;
+let mySnakeTimer;
+
+
+function mySnake() {
+
+    clearInterval(mySnakeTimer);
+
+    mySnakeBody = [
+        {x:10,y:10},
+        {x:9,y:10},
+        {x:8,y:10}
+    ];
+
+    mySnakeDX = 1;
+    mySnakeDY = 0;
+
+    mySnakeScore = 0;
+
+    makeFood();
+
+    mySnakeTimer =
+        setInterval(updateSnake,100);
+
+}
+
+
+function makeFood() {
+
+    myFood = {
+        x:Math.floor(Math.random()*25),
+        y:Math.floor(Math.random()*20)
+    };
+
+}
+
+
+function updateSnake() {
+
+    let head = {
+        x:mySnakeBody[0].x + mySnakeDX,
+        y:mySnakeBody[0].y + mySnakeDY
+    };
+
+
+    if(
+        head.x < 0 ||
+        head.x >= 25 ||
+        head.y < 0 ||
+        head.y >= 20
+    ) {
+
+        mySnake();
+
+        return;
+    }
+
+
+    mySnakeBody.unshift(head);
+
+
+    if(
+        head.x === myFood.x &&
+        head.y === myFood.y
+    ) {
+
+        mySnakeScore++;
+
+        makeFood();
+
+    } else {
+
+        mySnakeBody.pop();
+
+    }
+
+
+    drawSnake();
+
+}
+
+
+function drawSnake() {
+
+    myCtx.fillStyle = "#081331";
+
+    myCtx.fillRect(
+        0,0,700,500
+    );
+
+
+    mySnakeBody.forEach(
+        (part,index) => {
+
+            myCtx.fillStyle =
+                index === 0
+                ? "#a78bfa"
+                : "#38bdf8";
+
+            myCtx.fillRect(
+                part.x*28,
+                part.y*25,
+                23,
+                20
+            );
+
+        }
+    );
+
+
+    myCtx.fillStyle = "#ff4d6d";
+
+    myCtx.beginPath();
+
+    myCtx.arc(
+        myFood.x*28+11,
+        myFood.y*25+10,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    myCtx.fill();
+
+
+    document.getElementById("myGameInfo")
+        .textContent =
+        "Score: " + mySnakeScore +
+        " | Arrow Keys";
+}
+
+
+/* ================================
+   PARKOUR RUN
+================================ */
+
+function myRunner() {
+
+    let player = {
+        x:100,
+        y:380,
+        vy:0,
+        jumping:false
+    };
+
+    let obstacle = {
+        x:700,
+        width:45,
+        height:80
+    };
+
+    let score = 0;
+
+
+    window.myJump = function() {
+
+        if(!player.jumping) {
+
+            player.vy = -14;
+
+            player.jumping = true;
+
+        }
+
+    };
+
+
+    function loop() {
+
+        myCtx.fillStyle = "#10163b";
+
+        myCtx.fillRect(
+            0,0,700,500
+        );
+
+
+        /* ground */
+
+        myCtx.fillStyle = "#38bdf8";
+
+        myCtx.fillRect(
+            0,430,
+            700,5
+        );
+
+
+        /* player physics */
+
+        player.vy += .7;
+
+        player.y += player.vy;
+
+
+        if(player.y >= 380) {
+
+            player.y = 380;
+
+            player.vy = 0;
+
+            player.jumping = false;
+
+        }
+
+
+        /* obstacle */
+
+        obstacle.x -= 6;
+
+
+        if(obstacle.x < -50) {
+
+            obstacle.x = 700;
+
+            score++;
+
+        }
+
+
+        /* collision */
+
+        if(
+            player.x < obstacle.x + obstacle.width &&
+            player.x + 35 > obstacle.x &&
+            player.y + 50 >
+                430 - obstacle.height
+        ) {
+
+            obstacle.x = 700;
+
+            score = 0;
+
+        }
+
+
+        /* player */
+
+        myCtx.fillStyle = "#a78bfa";
+
+        myCtx.fillRect(
+            player.x,
+            player.y,
+            35,
+            50
+        );
+
+
+        /* obstacle */
+
+        myCtx.fillStyle = "#ff4d6d";
+
+        myCtx.fillRect(
+            obstacle.x,
+            430-obstacle.height,
+            obstacle.width,
+            obstacle.height
+        );
+
+
+        document.getElementById("myGameInfo")
+            .textContent =
+            "Score: " + score +
+            " | SPACE = JUMP";
+
+
+        myAnimation =
+            requestAnimationFrame(loop);
+
+    }
+
+
+    loop();
+
+}
+
+
+/* ================================
+   SHOOTER
+================================ */
+
+let shooterP1;
+let shooterP2;
+let shooterBullets = [];
+
+
+function myShooter() {
+
+    shooterP1 = {
+        x:100,
+        y:250,
+        score:0
+    };
+
+    shooterP2 = {
+        x:600,
+        y:250,
+        score:0
+    };
+
+    shooterBullets = [];
+
+
+    function loop() {
+
+        myCtx.fillStyle = "#090f2b";
+
+        myCtx.fillRect(
+            0,0,700,500
+        );
+
+
+        /* P1 */
+
+        if(myKeys["w"])
+            shooterP1.y -= 5;
+
+        if(myKeys["s"])
+            shooterP1.y += 5;
+
+        if(myKeys["a"])
+            shooterP1.x -= 5;
+
+        if(myKeys["d"])
+            shooterP1.x += 5;
+
+
+        /* P2 */
+
+        if(myKeys["arrowup"])
+            shooterP2.y -= 5;
+
+        if(myKeys["arrowdown"])
+            shooterP2.y += 5;
+
+        if(myKeys["arrowleft"])
+            shooterP2.x -= 5;
+
+        if(myKeys["arrowright"])
+            shooterP2.x += 5;
+
+
+        shooterP1.x =
+            Math.max(20,Math.min(680,shooterP1.x));
+
+        shooterP1.y =
+            Math.max(20,Math.min(480,shooterP1.y));
+
+
+        shooterP2.x =
+            Math.max(20,Math.min(680,shooterP2.x));
+
+        shooterP2.y =
+            Math.max(20,Math.min(480,shooterP2.y));
+
+
+        /* bullets */
+
+        shooterBullets.forEach(
+            bullet => {
+                bullet.x += bullet.dx;
+            }
+        );
+
+
+        shooterBullets =
+            shooterBullets.filter(
+                bullet =>
+                    bullet.x > 0 &&
+                    bullet.x < 700
+            );
+
+
+        /* draw P1 */
+
+        myCtx.fillStyle = "#38bdf8";
+
+        myCtx.beginPath();
+
+        myCtx.arc(
+            shooterP1.x,
+            shooterP1.y,
+            23,
+            0,
+            Math.PI*2
+        );
+
+        myCtx.fill();
+
+
+        /* draw P2 */
+
+        myCtx.fillStyle = "#ff4d6d";
+
+        myCtx.beginPath();
+
+        myCtx.arc(
+            shooterP2.x,
+            shooterP2.y,
+            23,
+            0,
+            Math.PI*2
+        );
+
+        myCtx.fill();
+
+
+        /* bullets */
+
+        shooterBullets.forEach(
+            bullet => {
+
+                myCtx.fillStyle =
+                    bullet.color;
+
+                myCtx.fillRect(
+                    bullet.x,
+                    bullet.y,
+                    12,
+                    5
+                );
+
+            }
+        );
+
+
+        document.getElementById("myGameInfo")
+            .textContent =
+            "BLUE: " +
+            shooterP1.score +
+            " | RED: " +
+            shooterP2.score +
+            " | P1 WASD + F | P2 ARROWS + L";
+
+
+        myAnimation =
+            requestAnimationFrame(loop);
+
+    }
+
+
+    loop();
+
+}
+
+
+/* ================================
+   BASKETBALL
+================================ */
+
+function myBasketball() {
+
+    let blueScore = 0;
+    let redScore = 0;
+
+    let balls = [];
+
+
+    function shoot(color) {
+
+        balls.push({
+
+            x:color === "blue"
+                ? 100
+                : 600,
+
+            y:400,
+
+            vx:color === "blue"
+                ? 7
+                : -7,
+
+            vy:-13,
+
+            color:color
+
+        });
+
+    }
+
+
+    window.blueBasketShoot =
+        () => shoot("blue");
+
+
+    window.redBasketShoot =
+        () => shoot("red");
+
+
+    function loop() {
+
+        myCtx.fillStyle = "#11163b";
+
+        myCtx.fillRect(
+            0,0,700,500
+        );
+
+
+        /* floor */
+
+        myCtx.fillStyle = "#8b5a2b";
+
+        myCtx.fillRect(
+            0,430,
+            700,70
+        );
+
+
+        /* hoops */
+
+        myCtx.strokeStyle = "#ff7b00";
+
+        myCtx.lineWidth = 7;
+
+
+        myCtx.beginPath();
+
+        myCtx.arc(
+            40,
+            250,
+            30,
+            0,
+            Math.PI
+        );
+
+        myCtx.stroke();
+
+
+        myCtx.beginPath();
+
+        myCtx.arc(
+            660,
+            250,
+            30,
+            0,
+            Math.PI
+        );
+
+        myCtx.stroke();
+
+
+        /* balls */
+
+        balls.forEach(ball => {
+
+            ball.x += ball.vx;
+
+            ball.y += ball.vy;
+
+            ball.vy += .35;
+
+
+            myCtx.fillStyle = "#ff8c00";
+
+            myCtx.beginPath();
+
+            myCtx.arc(
+                ball.x,
+                ball.y,
+                11,
+                0,
+                Math.PI*2
+            );
+
+            myCtx.fill();
+
+
+            let hoop =
+                ball.color === "blue"
+                ? 660
+                : 40;
+
+
+            if(
+                Math.abs(ball.x-hoop) < 30 &&
+                ball.y > 220 &&
+                ball.y < 290
+            ) {
+
+                if(ball.color === "blue")
+                    blueScore++;
+                else
+                    redScore++;
+
+                ball.x = -200;
+
+            }
+
+        });
+
+
+        balls =
+            balls.filter(
+                ball => ball.x > -100
+            );
+
+
+        document.getElementById("myGameInfo")
+            .textContent =
+            "BLUE: " + blueScore +
+            " | RED: " + redScore +
+            " | W = BLUE SHOOT | ↑ = RED SHOOT";
+
+
+        myAnimation =
+            requestAnimationFrame(loop);
+
+    }
+
+
+    loop();
+
+}
+
+
+/* ================================
+   KEYBOARD
+================================ */
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        myKeys[e.key.toLowerCase()] = true;
+
+
+        if(myCurrentGame === "2048") {
+
+            if(e.key === "ArrowLeft")
+                move2048("left");
+
+            if(e.key === "ArrowRight")
+                move2048("right");
+
+            if(e.key === "ArrowUp")
+                move2048("up");
+
+            if(e.key === "ArrowDown")
+                move2048("down");
+
+        }
+
+
+        if(myCurrentGame === "Snake") {
+
+            if(
+                e.key === "ArrowUp" &&
+                mySnakeDY !== 1
+            ) {
+
+                mySnakeDX=0;
+                mySnakeDY=-1;
+
+            }
+
+            if(
+                e.key === "ArrowDown" &&
+                mySnakeDY !== -1
+            ) {
+
+                mySnakeDX=0;
+                mySnakeDY=1;
+
+            }
+
+            if(
+                e.key === "ArrowLeft" &&
+                mySnakeDX !== 1
+            ) {
+
+                mySnakeDX=-1;
+                mySnakeDY=0;
+
+            }
+
+            if(
+                e.key === "ArrowRight" &&
+                mySnakeDX !== -1
+            ) {
+
+                mySnakeDX=1;
+                mySnakeDY=0;
+
+            }
+
+        }
+
+
+        if(
+            myCurrentGame === "Parkour Run" &&
+            e.code === "Space"
+        ) {
+
+            if(window.myJump)
+                window.myJump();
+
+        }
+
+
+        if(
+            myCurrentGame === "Shooter" &&
+            e.key.toLowerCase() === "f"
+        ) {
+
+            shooterBullets.push({
+                x:shooterP1.x,
+                y:shooterP1.y,
+                dx:8,
+                color:"#38bdf8"
+            });
+
+        }
+
+
+        if(
+            myCurrentGame === "Shooter" &&
+            e.key.toLowerCase() === "l"
+        ) {
+
+            shooterBullets.push({
+                x:shooterP2.x,
+                y:shooterP2.y,
+                dx:-8,
+                color:"#ff4d6d"
+            });
+
+        }
+
+
+        if(
+            myCurrentGame === "Basketball" &&
+            e.key.toLowerCase() === "w"
+        ) {
+
+            if(window.blueBasketShoot)
+                blueBasketShoot();
+
+        }
+
+
+        if(
+            myCurrentGame === "Basketball" &&
+            e.key === "ArrowUp"
+        ) {
+
+            if(window.redBasketShoot)
+                redBasketShoot();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keyup",
+    function(e) {
+
+        myKeys[e.key.toLowerCase()] = false;
+
+    }
+);
+
+</script>
 
